@@ -400,6 +400,13 @@ function! ale#fix#Fix(buffer, fixing_flag, ...) abort
 
     silent doautocmd <nomodeline> User ALEFixPre
 
+    " JFLY HACK: If the buffer contains <<<, skip running the fixers for now.
+    for line in g:ale_fix_buffer_data[a:buffer].lines_before
+        if line =~ "<<<"
+            return 0
+        endif
+    endfor
+
     call s:RunFixer({
     \   'buffer': a:buffer,
     \   'input': g:ale_fix_buffer_data[a:buffer].lines_before,
